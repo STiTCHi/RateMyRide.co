@@ -17,6 +17,7 @@ $userInfo = mysql_fetch_array( $data );
 
 // All the style/script files.
 include('incl/header_scripts.php');
+
 ?>
 <script type="text/javascript" src="http://www.carqueryapi.com/js/carquery.0.3.3.js"></script>
 <script type="text/javascript">
@@ -38,6 +39,24 @@ function()
      //Optional: initialize the year, make, model, and trim drop downs by providing their element IDs
      carquery.initYearMakeModelTrim('car-years', 'car-makes', 'car-models', 'car-model-trims');
 });
+</script>
+<script>
+  $(function() {
+    var tooltips = $( "[title]" ).tooltip({
+      position: {
+        my: "left top",
+        at: "right+5 top-5"
+      },
+      show: {
+        effect: "slide",
+        delay: 350
+      },
+      hide: {
+        effect: "slide",
+        delay: 1050
+      }
+    });
+  });
 </script>
 </head>
 
@@ -62,31 +81,30 @@ function()
       border-radius: 0px;
       box-shadow: 0 0 8px rgba(255, 161, 53, 1.0);
       border: solid 1px rgba(255, 161, 53, 1.0);
-      padding: 20px;
-      background-color: #333;">
+      padding: 20px;">
       
      
 <center><h2>Upload Your Car</h2></center>
 <form enctype="multipart/form-data" method="post" action="upload.php">
-	<label for="car-years">Step 1) select the Year:</label>
-	<hr />
-		<center><select width="20" name="car-years" id="car-years" data-role="none"></select></center> <br />
-		<label for="car-makes">Step 2) select the Make:</label>
-	<hr />
-		<center><select width="20" name="car-makes" id="car-makes" data-role="none"></select></center><br />
-	<label for="car-model-trims">Step 3) select the Model:</label>
-	<hr />
-		<center><select width="20" name="car-models" id="car-models" data-role="none"></select></center><br />
-	<label for="car-model-trims">Step 4) select the Trim:</label>
-	<hr />
-		<center><select width="20" name="car-model-trims" id="car-model-trims" data-role="none"></select></center><br />
+	<label for="car-years" title="Select the Year">Step 1)</label>
+	
+		<center><select width="20" name="car-years" id="car-years" data-role="none" title="Select the Year"></select></center> <br />
+		<label for="car-makes" title="Select the Make">Step 2)</label>
+	
+		<center><select width="20" name="car-makes" id="car-makes" data-role="none" title="Select the Make"></select></center><br />
+	<label for="car-model-trims" title="Select the Model">Step 3)</label>
+	
+		<center><select width="20" name="car-models" id="car-models" data-role="none" title="Select the Model"></select></center><br />
+	<label for="car-model-trims" title="Select the Trim">Step 4)</label>
+	
+		<center><select width="20" name="car-model-trims" id="car-model-trims" data-role="none" title="Select the Trim"></select></center><br />
 		<br />
 		<div id="car-model-data"></div>
 		<br />
 	
 
 	<div class="row">
-	  <label for="fileToUpload">Step 5) select image to upload</label>
+	  <label for="fileToUpload" title="Select image to upload">Step 5)</label>
 	  <hr />
 	  <input type="file" name="filesToUpload[]" id="filesToUpload" />
 	  <center>

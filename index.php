@@ -19,6 +19,7 @@ $pageTitle = "Rate My Ride - RMR";
 
 // All the style/script files.
 include('incl/header_scripts.php');
+
 ?>
 <style>
 label.ui-input-text {
