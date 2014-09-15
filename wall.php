@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 if($_SESSION['usernamexxx']==""){
 	// Not logged in redirect to the login page.
@@ -110,22 +110,13 @@ include('incl/header_scripts.php');
 					$modelName		= $row['model_name'];
 					$modelYear		= $row['model_year'];
 					$cid						= $row['CarID'];
-					// Display 'new' tag if car was uploaded today!..
-          ?>
-          <a href="car.php?cid=<?=$cid?>" data-ajax="false">
-					<li data-filter-class='["new", "<?=$make?>"]'>
-					<img src="<?=$imagePath?>" width="200">					
-					<div class="rating">
-					<span input type="radio">☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-					</div> 
-					
-					 <a href="car.php?cid=<?=$cid?>" data-ajax="false">
-					
+					?>
+					<a href="car.php?cid=<?=$cid?>"><li data-filter-class='["new", "<?=$make?>"]'>
+					<img src="<?=$imagePath?>" width="200">
+					<p>** ★★★★★ **</p>
+					<hr />
 					<p><b><?=$make. ' - ' . $modelName . ' ('.$modelYear.')'?></b></p>
-          <i><a style="float:left;" href="car.php?cid=<?=$cid?>" data-ajax="false">find specs</a></i>
-          <i><a style="float:right;" href="pics.php?cid=<?=$cid?>" data-ajax="false">find pics</a></i>
-					</a>
-          </li>				
+					</li>	</a>				
 					<?php
 				}
 
@@ -133,7 +124,6 @@ include('incl/header_scripts.php');
 			else {
 				echo mysql_error();
 			}
-
 		?>
 		  
         <!-- End of grid blocks -->

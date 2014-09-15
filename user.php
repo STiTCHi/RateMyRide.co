@@ -15,7 +15,7 @@ if($_REQUEST['search']!=""){$xSearch=$_REQUEST['search'];}else{$xSearch="-1";}
 	if($_GET['update']=="1"){
 		if($_POST['email'] !=""){
 
-	mysql_query("UPDATE Users SET `Username`='".mysql_real_escape_string($_POST['username'])."', `Password`='".mysql_real_escape_string(encrypt($_POST['pass'], ENCRYP_KEY))."',`FirstName`='".mysql_real_escape_string($_POST['fname'])."',`Theme`='".mysql_real_escape_string($_POST['theme'])."' WHERE UID='".$xSearch."' OR Email='".$xSearch."'") or die(mysql_error());
+	mysql_query("UPDATE Users SET `Username`='".mysql_real_escape_string($_POST['username'])."', `Password`='".mysql_real_escape_string(encrypt($_POST['pass'], ENCRYP_KEY))."',`FirstName`='".mysql_real_escape_string($_POST['fname'])."',`AccountType`='".mysql_real_escape_string($_POST['permissions'])."',`Theme`='".mysql_real_escape_string($_POST['theme'])."' WHERE UID='".$xSearch."' OR Email='".$xSearch."'") or die(mysql_error());
 		}
 }
 
@@ -34,6 +34,11 @@ $userInfo = mysql_fetch_array( $data );
 
 //Header
 include('incl/header_scripts.php');
+
+if($userInfo['Theme'] !=""){
+	$themeSet = $userInfo['Theme'];
+}
+
 ?>
 
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />
@@ -93,7 +98,27 @@ z-index: 999999;
   ?>
   
   <div data-role="content">
+            
+            <div class="ui-grid-solo">
+                <div class="ui-block-a">
+                    <div data-role="fieldcontain" >
+                    <form action="user.php" method="get" data-inline="true" data-ajax="false">
+                      <div data-role="controlgroup" data-type="horizontal" style="width: 475px;">
+                      <input type="text" name="search" id="search" data-wrapper-class="controlgroup-textinput ui-btn" value="<?=$userInfox['Website']?>" placeholder="Email or User ID" autocomplete="off" class="ui-autocomplete-input"/>
+                      <button type="submit" name="submit" data-ajax="false">Search</button>                      <a href="#popupInfo2" data-rel="popup" data-transition="flip" class="my-tooltip-btn ui-btn ui-btn-inline ui-icon-info ui-btn-icon-notext" title="Learn more"></a>
+                    <div data-role="popup" id="popupInfo2" class="ui-content" style="max-width:350px;">
+                      <p><b>Find a user quickly!</b></p>
+                      <p>To help accomplish this you can search for both their email or the user id.</p>
+                    </div>                    
+                      </div>
 
+                    </form>
+
+                    </div>
+
+                </div>
+                               
+            </div>
 			<form action="user.php?update=1&search=<?=$userInfox['UID']?>" method="post" data-inline="true" data-ajax="false">
                 <div data-role="collapsible" data-collapsed="false">
                 <h4>User Infomation<?php if($userInfox['UID'] != ""){echo " - <i>(uid: ".$userInfox['UID'].")</i>";}?> <u><?=$userInfox['AccountType']?></u></h4>
@@ -139,21 +164,29 @@ z-index: 999999;
                             <div class="ui-block-b">
                               <div data-role="fieldcontain">
                                 <label for="lastip">Last IP</label>
-                                <input type="text" name="lastip" id="lastip" disabled="disabled" value="<?=$userInfox['IP']?>"  />
+                                <input type="text" name="lastip" id="lastip" disabled="disabled" value="<?=$userInfox['LastIP']?>"  />
                               </div>
                               <div data-role="fieldcontain">
                                 <label for="lastlogin">Last login</label>
-                                <input type="text" name="lastlogin" id="lastlogin" disabled="disabled" value="<?=$userInfox['LastSeen']?>"  />
+                                <input type="text" name="lastlogin" id="lastlogin" disabled="disabled" value="<?=$userInfox['LastLogin']?>"  />
                               </div>
                               <div data-role="fieldcontain">
                                 <label for="date">Join Date</label>
                                 <input type="text" name="date" id="date" data-role="date" disabled="disabled" value="<?=$userInfox['JoinDate']?>" placeholder="yyyy-mm-dd" required/>
                               </div>
-                              <div data-role="fieldcontain">
-                                <label for="permissions">User Role</label>
-                                <input type="text" name="permissions" id="permissions" disabled="disabled" value="<?=$userInfox['AccountType']?>"  />
-                              </div> 
+                              
+                                <fieldset data-role="controlgroup" data-mini="true">
+                                    <legend>User Role</legend>
+                                    <input type="radio" name="permissions" id="radio-choice-ur-6a" value="Admin" <?php if($userInfox['AccountType'] =="Admin"){?>checked="checked"<?php } ?>>
+                                    <label for="radio-choice-ur-6a">Admin</label>
+                                    <input type="radio" name="permissions" id="radio-choice-ur-6b" value="Staff"<?php if($userInfox['AccountType'] =="Staff"){?>checked="checked"<?php } ?>>
+                                    <label for="radio-choice-ur-6b">Staff</label>
+                                    <input type="radio" name="permissions" id="radio-choice-ur-6c" value="Client"<?php if($userInfox['AccountType'] =="Client"){?>checked="checked"<?php } ?>>
+                                    <label for="radio-choice-ur-6c">Client</label>
+
+                                </fieldset> 
                             </div>
+                                
                             
                             <div align="right" style="float:left;"><button data-inline="true" type="submit" name="submit" data-mini="true" data-ajax="false">Save Changes</button></div> 
                      </div>
