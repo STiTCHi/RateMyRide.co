@@ -31,6 +31,16 @@ class RateMyRideDatabase_Functions
 
         return "Error";
     }
+
+	//Rating data
+		
+		function insert_rating($UserID, $CarID, $User_Rating){
+    		$sql = 'INSERT INTO `Ratings` (UID,CarID,Rating) VALUES ("'.$UserID.'","'.$CarID.'","'.$User_Rating.'")';
+    		$result	= mysql_query($sql);
+		return $sql;
+		if($result)	{ return "Success"; } else { return "Error"; }
+        return "Error";
+	} 
 	
 }
 
