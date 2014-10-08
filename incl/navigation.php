@@ -6,7 +6,7 @@
     <div id="branding" role="banner" style="float: right;
 height: 25px;
 margin-right: 6px;
-margin-top: 3px;"> <a href="/" data-ajax="false"><img height="32px" src="images/rmr-logo.png" alt="RMR Logo"></a>
+margin-top: 3px;"> <a href="/" data-ajax="false"><img height="32" src="images/rmr-logo.png" alt="RMR Logo"></a>
     
     </div>
     
@@ -20,7 +20,7 @@ margin-top: 3px;"> <a href="/" data-ajax="false"><img height="32px" src="images/
         <li><a href="wall.php?q=random" data-transition="flow" data-ajax="false"<?php if($wallType =="random"){ echo 'class="ui-btn-active"'; }?>>Random</a></li>
       </ul>
     </div>
-	
-    <!-- /navbar --> 
-  
+	  <?=$inform_message?>
+    <!-- /navbar -->
   </div>
+  

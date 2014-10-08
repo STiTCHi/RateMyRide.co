@@ -65,7 +65,7 @@ foreach ($_FILES as $file) {
 		
 		echo $Database_Func->saveCarData($imagePath, $UserID, $car_specs[0]);
 		
-		echo 'Done ...';
+		echo ' Done ...';
     } else {
         echo 'You must upload an image...';
     }

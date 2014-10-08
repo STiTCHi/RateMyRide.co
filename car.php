@@ -7,6 +7,7 @@ if($_SESSION['usernamexxx']==""){
 //MySQL Database Connect
 include 'dbconnection.php';
 include 'incl/functions.php';
+require_once('database_functions.php');
 
 // Gets data from "Users" table of our database 
 $data = mysql_query('SELECT * FROM Users WHERE Username="'.$_SESSION['usernamexxx'].'"') or die(mysql_error());
@@ -15,15 +16,32 @@ $data = mysql_query('SELECT * FROM Users WHERE Username="'.$_SESSION['usernamexx
 // So it can be accessed later throughout this page.
 $userInfo = mysql_fetch_array( $data );
 
+$wallType = $_GET['q'];
 $carID = $_GET['cid'];
 
-$wallType = $_GET['q'];
+// get the rating value from the user
+$userRating = $_GET['ur'];
+
+// Set the rating for this car by the current user.
+if( $userRating != ""){
+
+    // Update/insert into the database `rating` table.
+    $Database_Func = new RateMyRideDatabase_Functions;
+    // echo to test responce 
+    
+    $ans = $Database_Func->insert_rating($userInfo['UID'], $carID, $userRating);
+    
+    if($ans == "Success"){
+        $inform_message = "<center><p>You have successfuly rated this car <b>".$userRating."</b> out of 5</p></center>";
+    }
+    else{
+        $inform_message = "<center><p>$ans</p></center>";
+    }
+
+}
 
 // Sets default page view to popular, if none is set.
 if( $wallType == "" ){ $wallType = "popular"; }
-
-// Set page title // upper case first letter ucwords()
-$pageTitle = ucwords( $wallType ) . " - RMR";
 
 // run the query for the Cars table // to get all the info for a specific record in our database.
 $carData = mysql_query("SELECT * FROM `Cars` WHERE CarID='". $carID. "'");
@@ -32,16 +50,26 @@ $carData = mysql_query("SELECT * FROM `Cars` WHERE CarID='". $carID. "'");
 // So it can be accessed later throughout this page.
 $carInfo = mysql_fetch_array( $carData );
 		
+// Set page title // upper case first letter ucwords()
+$pageTitle = ucwords( $carInfo['make_display'] . ' ' . $carInfo['model_name'] . ': ' . $carInfo['model_year'] ) . " - RMR";
+
 // All the style/script files + js...
 include('incl/header_scripts.php'); 
 ?>
 
 <!-- CSS Reset -->
-<link rel="stylesheet" href="dgl-plugin/css/reset.css">
+<!-- <link rel="stylesheet" href="dgl-plugin/css/reset.css"> -->
 <!-- Global CSS for the page and tiles -->
 <link rel="stylesheet" href="dgl-plugin/css/main.css">
 <!-- Specific CSS for the tiles -->
 <link rel="stylesheet" href="dgl-plugin/example-filter/css/style.css">
+<style>
+.inner-center {
+width: auto;
+margin: auto;
+max-width: 492px;
+}
+</style>
 </head>
 
 <body class="container">
@@ -72,9 +100,25 @@ include('incl/header_scripts.php');
   ?>
 
   </div>
+
+    <?php
+    $imagePath = str_replace( '[width]', '500w', $carInfo['ImagePath'] );
+    $make      = $carInfo['make_display'];
+    $modelName = $carInfo['model_name'];
+    $modelYear = $carInfo['model_year'];
+    $cid       = $carInfo['CarID'];
+    ?>
+<div data-role="content"><br />
+    <center><h2><?=$make.' '.$modelName.' - '.$modelYear?></h2></center>
+    <div class="inner-center">
+        <img src="<?=$imagePath?>" alt="<?=$make.' '.$modelName.' - '.$modelYear?>" style="style="max-width:500px; width:100%"">
+    </div>
+</div>
+
   
   <!-- Main Content -->
   <div data-role="content">
+
     <div id="container">
       <div id="main" role="main">
 
@@ -85,19 +129,19 @@ include('incl/header_scripts.php');
         are used for filtering. The classes match the "data-filter" properties above.
         -->
         <li data-filter-class='["engine"]'>
-        <p><b>Engine Position</b></p>
+        <p class="ui-btn-active ui-link ui-btn"><b>Engine Position</b></p>
         <hr />
         <p><?=$carInfo['model_engine_position']?></p>
         </li>
 
         <li data-filter-class='["engine"]'>
-        <p><b>Engine cc</b></p>
+        <p data-theme="a"><b>Engine cc</b></p>
         <hr />
         <p><?=$carInfo['model_engine_cc']?></p>
         </li>
 
         <li data-filter-class='["engine"]'>
-        <p><b>Engine cyl</b></p>
+        <p data-theme="a"><b>Engine cyl</b></p>
         <hr />
         <p><?=$carInfo['model_engine_cyl']?></p>
         </li>
@@ -278,9 +322,14 @@ include('incl/header_scripts.php');
         <hr />
         <p><?=$carInfo['make_country']?></p>
         </li>
-
-
-
+<?php
+$carSalesLink = "http://www.carsales.com.au/all-cars/results.aspx?silo=stock&q=(((Service%3d%5bCarsales%5d)%26(((SiloType%3d%5bDealer+used+cars%5d)%7c(SiloType%3d%5bDemo+and+near+new+cars%5d))%7c(SiloType%3d%5bBrand+new+cars+in+stock%5d)))%26((Make%7b%3d%7d%5b".$make."%5d)%7b%26%7d(Model%7b%3d%7d%5b".$modelName."%5d)))&vertical=car&sortby=TopDeal";
+?>
+        <li data-filter-class='["engine"]'>
+        <p><b>CarSales Search</b></p>
+        <hr />
+        <p><a href="<?=$carSalesLink?>" target="_blank">CarSales.com.au</a></p>
+        </li>
 
 
         <!-- End of grid blocks -->

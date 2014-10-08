@@ -37,7 +37,7 @@ include('incl/header_scripts.php');
 ?>
 
 <!-- CSS Reset -->
-<link rel="stylesheet" href="dgl-plugin/css/reset.css">
+<!--<link rel="stylesheet" href="dgl-plugin/css/reset.css">-->
 <!-- Global CSS for the page and tiles -->
 <link rel="stylesheet" href="dgl-plugin/css/main.css">
 <!-- Specific CSS for the tiles -->

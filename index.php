@@ -86,10 +86,9 @@ function register() {
       border-radius: 0px;
       box-shadow: 0 0 8px rgba(255, 161, 53, 1.0);
       border: solid 1px rgba(255, 161, 53, 1.0);
-      padding: 20px;
-      background-color: #333;">
+      padding: 20px;">
 
-Main Index page: Welcome <?=$userInfo['Username']?>
+<center>Welcome to Rate My Ride <?=ucwords( $userInfo['Username'] )?>.<center>
 
       </div>
       <div class="ui-block-c"></div>

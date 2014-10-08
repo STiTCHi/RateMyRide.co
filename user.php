@@ -114,7 +114,7 @@ z-index: 999999;
                               </div>
                               <div data-role="fieldcontain">
                               	<label for="pass">Password</label>
-                                <input type="text" name="pass" id="pass" value="<?=decrypt($userInfox['Password'], ENCRYP_KEY)?>"  />
+                                <input type="password" name="pass" id="pass" value="<?=decrypt($userInfox['Password'], ENCRYP_KEY)?>"  />
                               </div>
 								<fieldset data-role="controlgroup" data-mini="true">
                                     <legend>Theme</legend>

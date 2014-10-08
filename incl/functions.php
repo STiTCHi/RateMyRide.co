@@ -1,5 +1,4 @@
 <?php
-
 // Function to get the client IP address
 function get_client_ip() {
     $ipaddress = '';
