@@ -18,7 +18,7 @@ $userInfo = mysql_fetch_array( $data );
 
 $wallType = $_GET['q'];
 $carID = $_GET['cid'];
-
+$comment = $_POST['comment'];
 // get the rating value from the user
 $userRating = $_GET['ur'];
 
@@ -29,7 +29,7 @@ if( $userRating != ""){
     $Database_Func = new RateMyRideDatabase_Functions;
     // echo to test responce 
     
-    $ans = $Database_Func->insert_rating($userInfo['UID'], $carID, $userRating);
+    $ans = $Database_Func->insert_rating($userInfo['UID'], $carID, $userRating, $comment);
     
     if($ans == "Success"){
         $inform_message = "<center><p>You have successfuly rated this car <b>".$userRating."</b> out of 5</p></center>";
@@ -39,6 +39,10 @@ if( $userRating != ""){
     }
 
 }
+
+$sql = "SELECT * FROM `Rating` WHERE CarID =  '$CarID_' and NOT (Comment = '' OR Comment = NULL)";
+
+$result_comments = mysql_query($sql);
 
 // Sets default page view to popular, if none is set.
 if( $wallType == "" ){ $wallType = "popular"; }
@@ -69,6 +73,65 @@ width: auto;
 margin: auto;
 max-width: 492px;
 }
+
+
+.box{
+background: #f5f5f5; 
+background: -moz-linear-gradient(top,  #f5f5f5 0%, #efefef 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f5f5), color-stop(100%,#efefef)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #f5f5f5 0%,#efefef 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #f5f5f5 0%,#efefef 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #f5f5f5 0%,#efefef 100%); /* IE10+ */
+background: linear-gradient(top,  #f5f5f5 0%,#efefef 100%); /* W3C */
+-pie-background: linear-gradient(top,  #f5f5f5 0%,#efefef 100%); 
+border-radius: 7px;
+border:1px solid #d8d8d8;
+}
+
+.polaroid {
+  position: relative;
+  width: 480px;
+}
+ 
+.polaroid img {
+  border: 10px solid #fff;
+  border-bottom: 45px solid #fff;
+  -webkit-box-shadow: 3px 3px 3px #777;
+     -moz-box-shadow: 3px 3px 3px #777;
+          box-shadow: 3px 3px 3px #777;
+}
+ 
+.polaroid p {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  bottom: 0px;
+  font: 400 18px/1 'Kaushan Script', cursive;
+  color: #888;
+}
+
+.comment{
+    border: 1px solid #fff;
+    border-bottom: 2px solid #fff;
+    padding-left: 20px;
+    -webkit-box-shadow: 3px 3px 3px #777;
+    -moz-box-shadow: 3px 3px 3px #777;
+    box-shadow: 3px 3px 3px #777;
+
+}
+
+#tiles li {
+width: 200px;
+background-color: #ffffff;
+border: 1px solid #dedede;
+border-radius: 2px;
+-moz-border-radius: 2px;
+-webkit-border-radius: 2px;
+display: none;
+cursor: pointer;
+padding: 2px;
+}
+
 </style>
 </head>
 
@@ -108,14 +171,62 @@ max-width: 492px;
     $modelYear = $carInfo['model_year'];
     $cid       = $carInfo['CarID'];
     ?>
-<div data-role="content"><br />
-    <center><h2><?=$make.' '.$modelName.' - '.$modelYear?></h2></center>
-    <div class="inner-center">
-        <img src="<?=$imagePath?>" alt="<?=$make.' '.$modelName.' - '.$modelYear?>" style="style="max-width:500px; width:100%"">
-    </div>
-</div>
+    <div data-role="content"><br />
 
-  
+
+        <div class="ui-grid-a ui-responsive" style="font-size: 12px;">
+            <div class="ui-block-a">
+                <div class="inner-center">
+
+                    <div class="polaroid">
+                        <p><?=$make.' '.$modelName.' - '.$modelYear?></p>
+                        <img src="<?=$imagePath?>" alt="<?=$make.' '.$modelName.' - '.$modelYear?>" style="width:100%">
+                    </div>
+                </div>
+            </div>
+            <div class="ui-block-b">
+                <div class="inner-center">
+                    <div data-role="collapsible" data-collapsed="false">
+                        <h4>Comments...</h4>
+
+                        <?php
+                        while ( $row = mysql_fetch_array( $result_comments ) ) {
+                            // looping through the rows.
+                            $c_com = $row['Comment'];
+                            $c_userId = $row['UID'];
+                            $c_date = $row['Ratedate'];
+                            ?>
+
+                        <div class="comment">
+                            <h4><?=$c_userId. ': '. $c_date?></h4>
+                            <p><?$c_com?></p>
+                        </div>
+                        <div style="padding-left: 20px; padding-top: 1px; padding-right: 20px;"><hr /></div>
+
+                            <?php
+                        } //$row = mysql_fetch_array( $uploadedCars2 )
+                        ?>
+                        
+                        
+
+                    </div>
+                    <form name="form1" method="post" action="car.php?cid=<?=$carID. '&check=5&ur='.$userRating?>" data-ajax="false">
+                        <div data-role="fieldcontain" >
+                        <label for="comment">Make Comment</label>
+                        <input type="text" name="comment" id="comment" value="<?= $_POST['comment'] ?>" data-mini="true" required/>
+                        </div>
+
+                        <div style="float:right;">
+                        <button data-inline="true" type="submit" name="Submit" data-mini="true" data-ajax="false">Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
   <!-- Main Content -->
   <div data-role="content">
 
@@ -128,179 +239,253 @@ max-width: 492px;
         These are our grid items. Notice how each one has classes assigned that
         are used for filtering. The classes match the "data-filter" properties above.
         -->
+        <?php if($carInfo['model_engine_position'] != ""){?>
         <li data-filter-class='["engine"]'>
-        <p class="ui-btn-active ui-link ui-btn"><b>Engine Position</b></p>
-        <hr />
+        <p ><b>Engine Position</b></p>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div>
         <p><?=$carInfo['model_engine_position']?></p>
-        </li>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_engine_cc'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p data-theme="a"><b>Engine cc</b></p>
-        <hr />
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div>
         <p><?=$carInfo['model_engine_cc']?></p>
-        </li>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_engine_cyl'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p data-theme="a"><b>Engine cyl</b></p>
-        <hr />
-        <p><?=$carInfo['model_engine_cyl']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_engine_cyl']?></p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_engine_type'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Engine Type</b></p>
-        <hr />
-        <p><?=$carInfo['model_engine_type']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_engine_type']?></p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_engine_valves_per_cyl'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Engine Valves per cyl</b></p>
-        <hr />
-        <p><?=$carInfo['model_engine_valves_per_cyl']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_engine_valves_per_cyl']?></p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_engine_power_ps'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Engine Power ps</b></p>
-        <hr />
-        <p><?=$carInfo['model_engine_power_ps']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_engine_power_ps']?></p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_engine_power_rpm'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Engine Power RPM</b></p>
-        <hr />
-        <p><?=$carInfo['model_engine_power_rpm']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_engine_power_rpm']?></p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_engine_torque_nm'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Engine Torque nm</b></p>
-        <hr />
-        <p><?=$carInfo['model_engine_torque_nm']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_engine_torque_nm']?></p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_engine_torque_rpm'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Engine Torque RPM</b></p>
-        <hr />
-        <p><?=$carInfo['model_engine_torque_rpm']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_engine_torque_rpm']?></p>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_engine_bore_mm'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Engine Bore mm</b></p>
-        <hr />
-        <p><?=$carInfo['model_engine_bore_mm']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_engine_bore_mm']?></p>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_engine_stroke_mm'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Engine Stroke mm</b></p>
-        <hr />
-        <p><?=$carInfo['model_engine_stroke_mm']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_engine_stroke_mm']?></p>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_engine_compression'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Engine Compression</b></p>
-        <hr />
-        <p><?=$carInfo['model_engine_compression']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_engine_compression']?></p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_engine_fuel'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Engine Fuel</b></p>
-        <hr />
-        <p><?=$carInfo['model_engine_fuel']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_engine_fuel']?></p>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_top_speed_kph'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Top Speed</b></p>
-        <hr />
-        <p>kph: <?=$carInfo['model_top_speed_kph']?></p>
-        <p>mph: <?=$carInfo['model_top_speed_mph']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_top_speed_kph']?> kph, <?=$carInfo['model_top_speed_mph']?> mph</p>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_0_to_100_kph'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>0 to 100</b></p>
-        <hr />
-        <p>kph: <?=$carInfo['model_0_to_100_kph']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p>kph: <?=$carInfo['model_0_to_100_kph']?></p>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_drive'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Drive</b></p>
-        <hr />
-        <p><?=$carInfo['model_drive']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_drive']?></p>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_transmission_type'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Transmission</b></p>
-        <hr />
-        <p><?=$carInfo['model_transmission_type']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_transmission_type']?></p>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_seats'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Seats</b></p>
-        <hr />
-        <p><?=$carInfo['model_seats']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_seats']?></p>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_doors'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Doors</b></p>
-        <hr />
-        <p><?=$carInfo['model_doors']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_doors']?></p>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_weight_kg'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Weight</b></p>
-        <hr />
-        <p><?=$carInfo['model_weight_kg']?> kg</p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_weight_kg']?> kg</p>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_length_mm'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Length</b></p>
-        <hr />
-        <p><?=$carInfo['model_length_mm']?> mm</p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_length_mm']?> mm</p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_width_mm'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Width</b></p>
-        <hr />
-        <p><?=$carInfo['model_width_mm']?> mm</p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_width_mm']?> mm</p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_height_mm'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Height</b></p>
-        <hr />
-        <p><?=$carInfo['model_height_mm']?> mm</p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_height_mm']?> mm</p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_wheelbase_mm'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Wheelbase</b></p>
-        <hr />
-        <p><?=$carInfo['model_wheelbase_mm']?> mm</p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_wheelbase_mm']?> mm</p>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_lkm_hwy'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>lkm hwy</b></p>
-        <hr />
-        <p><?=$carInfo['model_lkm_hwy']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_lkm_hwy']?></p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_lkm_mixed'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>lkm mixed</b></p>
-        <hr />
-        <p><?=$carInfo['model_lkm_mixed']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_lkm_mixed']?></p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_lkm_city'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>lkm city</b></p>
-        <hr />
-        <p><?=$carInfo['model_lkm_city']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_lkm_city']?></p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_fuel_cap_l'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>fuel cap</b></p>
-        <hr />
-        <p><?=$carInfo['model_fuel_cap_l']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_fuel_cap_l']?></p>
+        </li><?php } ?>
 
+
+        <?php if($carInfo['model_sold_in_us'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Sold in the US</b></p>
-        <hr />
-        <p><?php
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?php
         if($carInfo['model_sold_in_us'] == "1"){
           echo "Yes";
         }
@@ -309,26 +494,31 @@ max-width: 492px;
         }
         ?>
         </p>
-        </li>
+        </li><?php } ?>
 
+        <?php if($carInfo['model_co2'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>co2</b></p>
-        <hr />
-        <p><?=$carInfo['model_co2']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['model_co2']?></p>
+        </li><?php } ?>
 
+        <?php if($carInfo['make_country'] != ""){?>
         <li data-filter-class='["engine"]'>
         <p><b>Country of Origin</b></p>
-        <hr />
-        <p><?=$carInfo['make_country']?></p>
-        </li>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><?=$carInfo['make_country']?></p>
+        </li><?php } ?>
 <?php
 $carSalesLink = "http://www.carsales.com.au/all-cars/results.aspx?silo=stock&q=(((Service%3d%5bCarsales%5d)%26(((SiloType%3d%5bDealer+used+cars%5d)%7c(SiloType%3d%5bDemo+and+near+new+cars%5d))%7c(SiloType%3d%5bBrand+new+cars+in+stock%5d)))%26((Make%7b%3d%7d%5b".$make."%5d)%7b%26%7d(Model%7b%3d%7d%5b".$modelName."%5d)))&vertical=car&sortby=TopDeal";
 ?>
         <li data-filter-class='["engine"]'>
         <p><b>CarSales Search</b></p>
-        <hr />
-        <p><a href="<?=$carSalesLink?>" target="_blank">CarSales.com.au</a></p>
+        <div Style="padding-left:20px; padding-right:20px; ">
+            <hr />
+        </div><p><a href="<?=$carSalesLink?>" target="_blank">CarSales.com.au</a></p>
         </li>
 
 

@@ -25,4 +25,22 @@ function sanitiseForSQL($str) {
 	$str = mysql_real_escape_string($str);
 	return $str;
 }
+
+function generateRandomString($length = 10) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, strlen($characters) - 1)];
+    }
+    return $randomString;
+}
+
+function sendEmail($to,$sub,$body){
+$headers = 'From: no-reply@ratemyride.co' . "\r\n" .
+    'Reply-To: info@ratemyride.co' . "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
+
+mail($to, $sub, $body, $headers);
+}
+
 ?>

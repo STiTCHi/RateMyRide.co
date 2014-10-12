@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 if($_SESSION['usernamexxx']==""){
 header("location:login.php");
@@ -162,20 +162,19 @@ if ( $uploadedCars ) {
 ?>
          <a href="car.php?cid=<?= $cid ?>" data-ajax="false">
                     <li data-filter-class='["new", "<?= $make ?>"]'>
+                    <p><b><?= $make . ' - ' . $modelName . ' (' . $modelYear . ')' ?></b></p>
                     <img src="<?= $imagePath ?>" width="200">                    
                     <div class="rating">
-		<a href="car.php?cid=<?= $cid ?>&ur=5" data-ajax="false"><span input name="radiobutton" type="radio" value="1">☆</span></a>
-		<a href="car.php?cid=<?= $cid ?>&ur=4" data-ajax="false"><span input name="radiobutton" type="radio" value="2">☆</span></a>
-		<a href="car.php?cid=<?= $cid ?>&ur=3" data-ajax="false"><span input name="radiobutton" type="radio" value="3">☆</span></a>
-		<a href="car.php?cid=<?= $cid ?>&ur=2" data-ajax="false"><span input name="radiobutton" type="radio" value="4">☆</span></a>
-		<a href="car.php?cid=<?= $cid ?>&ur=1" data-ajax="false"><span input name="radiobutton" type="radio" value="5">☆</span></a>
+    <a href="car.php?cid=<?= $cid ?>&ur=5" data-ajax="false"><span input name="radiobutton" type="radio" value="1">☆</span></a>
+    <a href="car.php?cid=<?= $cid ?>&ur=4" data-ajax="false"><span input name="radiobutton" type="radio" value="2">☆</span></a>
+    <a href="car.php?cid=<?= $cid ?>&ur=3" data-ajax="false"><span input name="radiobutton" type="radio" value="3">☆</span></a>
+    <a href="car.php?cid=<?= $cid ?>&ur=2" data-ajax="false"><span input name="radiobutton" type="radio" value="4">☆</span></a>
+    <a href="car.php?cid=<?= $cid ?>&ur=1" data-ajax="false"><span input name="radiobutton" type="radio" value="5">☆</span></a>
                     </div>
                     
                     <a href="car.php?cid=<?= $cid ?>" data-ajax="false">
-                    
-                    <p><b><?= $make . ' - ' . $modelName . ' (' . $modelYear . ')' ?></b></p>
-          <i><a style="float:left;" href="car.php?cid=<?= $cid ?>" data-ajax="false">find specs</a></i>
-          <i><a style="float:right;" href="pics.php?cid=<?= $cid ?>" data-ajax="false">find pics</a></i>
+          <i><a style="float:left;" class="ui-btn ui-icon-info ui-btn-icon-notext ui-btn-inline" href="car.php?cid=<?= $cid ?>" data-ajax="false">find specs</a></i>
+          <i><a style="float:right;" class="ui-btn ui-icon-tag ui-btn-icon-notext ui-btn-inline" href="pics.php?cid=<?= $cid ?>" data-ajax="false">find pics</a></i>
                     </a>
           </li>                
                     <?php

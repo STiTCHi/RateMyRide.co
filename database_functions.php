@@ -65,7 +65,7 @@ class RateMyRideDatabase_Functions
 
 
 		//Rating data
-
+/*
 		public function insert_rating($UserID_, $CarID_, $UserRating_)
 
 		{
@@ -137,7 +137,88 @@ class RateMyRideDatabase_Functions
 
 		
 
+	}*/
+
+
+		//Rating data
+
+		public function insert_rating($UserID_, $CarID_, $UserRating_, $comment_ = '')
+
+		{
+
+		// To protect MySQL injection
+
+		$UserID_ = stripslashes($UserID_);
+
+		$UserID_ = mysql_real_escape_string($UserID_);
+		$comment_ = mysql_real_escape_string($comment_);
+		
+
+		$CarID_ = stripslashes($CarID_);
+
+		$CarID_ = mysql_real_escape_string($CarID_);
+
+		
+
+		$UserRating_ = stripslashes($UserRating_);
+
+		$UserRating_ = mysql_real_escape_string($UserRating_);
+
+
+
+		$sql_check = "SELECT * 
+			FROM  `Rating` 
+			WHERE UID =  '$UserID_'
+			AND CarID =  '$CarID_'";
+
+		$check_result	= mysql_query($sql_check);
+
+		$num_of_rows = mysql_num_rows($check_result);
+
+
+
+			// Some check if this car has been rated by this user before
+
+	    	if($num_of_rows > 0){
+
+
+
+	    		// SQL Statement to update a record for a rating
+
+	    		$sql = "UPDATE `Rating` SET `Rating`='$UserRating_', `Ratedate`='".date("Y-m-d H:i:s")."', `Comment`='".$comment_."' WHERE UID =  '$UserID_'	AND CarID =  '$CarID_'";
+
+				$result	= mysql_query($sql);
+
+					if($result)	{ return "Success"; } else { return "Error: ". mysql_error(); }
+
+			        return "Error";
+
+			    	}
+
+	    	else{
+
+				// SQL Statement to insert a new record for a rating
+
+	    		$sql = 'INSERT INTO `Rating` (UID,CarID,Rating,RateDate,Comment) VALUES ("'.$UserID_.'","'.$CarID_.'","'.$UserRating_.'","'.date("Y-m-d H:i:s").'","'.$comment_.'")';
+
+	    		
+
+				$result	= mysql_query($sql);
+
+					if($result)	{ return "Success"; } else { return "Error: ". mysql_error(); }
+
+			        return "Error";
+
+				} 
+
+		
+
 	}
 
+
+
+
+
 }
+
 ?>
